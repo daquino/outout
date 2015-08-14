@@ -1,4 +1,4 @@
-package outout.config;
+package outout.integration.config;
 
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;

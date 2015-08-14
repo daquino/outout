@@ -54,3 +54,9 @@ eclipse {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
+
+task integrationTest(type: Test, dependsOn: testClasses) {
+    include '**/IntegrationTestSuite.class'
+    reports.junitXml.destination = "$buildDir/test-results/IntegrationTestSuite"
+    reports.html.destination = "$buildDir/test-results/IntegrationTestSuite"
+}

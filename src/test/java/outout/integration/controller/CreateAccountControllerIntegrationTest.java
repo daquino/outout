@@ -1,4 +1,4 @@
-package outout.controller;
+package outout.integration.controller;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +29,7 @@ import static org.junit.Assert.fail;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = OutoutApplication.class)
 @WebIntegrationTest
-public class CreateAccountControllerTest {
+public class CreateAccountControllerIntegrationTest {
     private final String createAccountPath = "http://localhost:9000/account/create";
     private RestTemplate restTemplate;
     private AccountCredentials accountCredentials;

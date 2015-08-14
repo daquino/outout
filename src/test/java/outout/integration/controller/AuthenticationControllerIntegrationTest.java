@@ -1,4 +1,4 @@
-package outout.controller;
+package outout.integration.controller;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,9 +22,6 @@ import outout.view.AccountCredentials;
 import outout.view.AuthenticationToken;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -33,7 +30,7 @@ import static org.junit.Assert.fail;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = OutoutApplication.class)
 @WebIntegrationTest
-public class AuthenticationControllerTest {
+public class AuthenticationControllerIntegrationTest {
     private RestTemplate restTemplate;
     private AccountCredentials accountCredentials;
     private DatabaseCleanup databaseCleanup;
