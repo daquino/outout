@@ -11,9 +11,9 @@ This is project is intended to be used as a paired programming refactoring exerc
 The master branch contains the poorly written code (mostly everything in the controller).
 
 There are 3 controllers in the application that need to have the code broken out:
-1.  CreateAccountController
-2.  AuthenticationController
-3.  SuggestionController
+-  CreateAccountController
+-  AuthenticationController
+-  SuggestionController
 
 Each of these contains controller, business logic and data access code that
 should be separated out into different classes.
