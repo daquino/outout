@@ -43,7 +43,7 @@ public class AuthenticationController {
             return new ResponseEntity<>(authenticationToken, HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<AuthenticationToken>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
