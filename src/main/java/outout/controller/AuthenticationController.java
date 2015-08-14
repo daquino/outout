@@ -37,33 +37,22 @@ public class AuthenticationController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<AuthenticationToken> authenticate(@RequestBody AccountCredentials accountCredentials) {
-        if(areCredentialsValid(accountCredentials)) {
+        Query query = entityManager.createQuery("select u from User u where u.username = :username");
+        query.setParameter("username", accountCredentials.getUsername());
+        query.setMaxResults(1);
+        List<User> users = query.getResultList();
+        User user = users.isEmpty() ? null : users.get(0);
+        if(user != null && passwordEncoder.matches(accountCredentials.getPassword(), user.getPassword())) {
             AuthenticationToken authenticationToken = new AuthenticationToken();
-            authenticationToken.setToken(buildToken(accountCredentials));
+            String jwt = Jwts.builder().signWith(SignatureAlgorithm.HS512, tokenSecret)
+                    .setSubject(accountCredentials.getUsername())
+                    .compact();
+            authenticationToken.setToken(jwt);
             return new ResponseEntity<>(authenticationToken, HttpStatus.OK);
         }
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    private boolean areCredentialsValid(final AccountCredentials accountCredentials) {
-        User user = findUserByUsername(accountCredentials.getUsername());
-        return user != null && passwordEncoder.matches(accountCredentials.getPassword(), user.getPassword());
-    }
-
-    private User findUserByUsername(String username) {
-        Query query = entityManager.createQuery("select u from User u where u.username = :username");
-        query.setParameter("username", username);
-        query.setMaxResults(1);
-        List<User> users = query.getResultList();
-        return users.isEmpty() ? null : users.get(0);
-    }
-
-    private String buildToken(final AccountCredentials accountCredentials) {
-        return Jwts.builder().signWith(SignatureAlgorithm.HS512, tokenSecret)
-                .setSubject(accountCredentials.getUsername())
-                .compact();
     }
 
 }
