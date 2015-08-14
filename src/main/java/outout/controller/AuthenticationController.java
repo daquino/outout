@@ -1,4 +1,4 @@
-package outout.integration.controller;
+package outout.controller;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

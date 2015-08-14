@@ -1,4 +1,4 @@
-package outout.integration.config;
+package outout.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
