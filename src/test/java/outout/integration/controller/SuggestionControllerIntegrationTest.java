@@ -69,7 +69,7 @@ public class SuggestionControllerIntegrationTest {
     }
 
     @Test
-    public void testThatUserSuggestionIsPersisted() throws Exception {
+    public void suggestingRestaurantPersistsSuggestion() throws Exception {
         initializeStateForMakingSuggestion();
         client.exchange(TestApplicationPaths.SUGGESTION_PATH, HttpMethod.POST, buildSuggestionEntity(), Void.class);
 
@@ -110,7 +110,7 @@ public class SuggestionControllerIntegrationTest {
     }
 
     @Test
-    public void testUnauthorizedUserIsForbiddenFromMakingSuggestions() throws Exception {
+    public void unauthorizedUserSuggestionIsForbidden() throws Exception {
         initializeStateForMakingSuggestion();
         try {
             client.exchange(TestApplicationPaths.SUGGESTION_PATH, HttpMethod.POST, buildSuggestionEntityWithoutAuthorization(), Void.class);
@@ -132,7 +132,7 @@ public class SuggestionControllerIntegrationTest {
     }
 
     @Test
-    public void testThatRestaurantsCanOnlyBeSuggestedOncePerDay() throws Exception {
+    public void restaurantsCanOnlyBeSuggestedOncePerDay() throws Exception {
         initializeStateForMakingSuggestion();
         insertSuggestion(DateTime.now().toDate());
 
@@ -165,7 +165,7 @@ public class SuggestionControllerIntegrationTest {
     }
 
     @Test
-    public void testThatRestaurantsCanOnlyBeSuggestedAgainOnADifferentDay() throws Exception {
+    public void restaurantsCanBeSuggestedAgainOnADifferentDay() throws Exception {
         initializeStateForMakingSuggestion();
         insertSuggestion(DateTime.now().minusDays(1).toDate());
 
@@ -187,7 +187,7 @@ public class SuggestionControllerIntegrationTest {
     }
 
     @Test
-    public void testThatUserCanOnlyMakeTwoSuggestionsPerDay() throws Exception {
+    public void userCanOnlyMakeTwoSuggestionsPerDay() throws Exception {
         initializeStateForMakingSuggestion();
         insertSuggestion();
         suggestedRestaurant = "Hattie B's";
@@ -212,7 +212,7 @@ public class SuggestionControllerIntegrationTest {
     }
 
     @Test
-    public void testThatUserCanRetrieveSuggestionsForToday() throws Exception {
+    public void userCanRetrieveSuggestionsForToday() throws Exception {
         initializeStateForMakingSuggestion();
         insertSuggestion();
         suggestedRestaurant = "Hattie B's";
