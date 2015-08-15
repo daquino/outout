@@ -21,4 +21,14 @@ public class DatabaseCleanup {
             exc.printStackTrace();
         }
     }
+
+    public void deleteSuggestions() {
+        try(Connection connection = dataSource.getConnection()){
+            PreparedStatement statement = connection.prepareStatement("delete from suggestion");
+            statement.execute();
+        }
+        catch(SQLException exc) {
+            exc.printStackTrace();
+        }
+    }
 }

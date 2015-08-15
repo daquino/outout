@@ -42,12 +42,14 @@ public class AuthenticationController {
         query.setMaxResults(1);
         List<User> users = query.getResultList();
         User user = users.isEmpty() ? null : users.get(0);
+        System.out.println("User = " + user.getUsername());
         if(user != null && passwordEncoder.matches(accountCredentials.getPassword(), user.getPassword())) {
             AuthenticationToken authenticationToken = new AuthenticationToken();
             String jwt = Jwts.builder().signWith(SignatureAlgorithm.HS512, tokenSecret)
                     .setSubject(accountCredentials.getUsername())
                     .compact();
             authenticationToken.setToken(jwt);
+            System.out.println("Token = " + jwt);
             return new ResponseEntity<>(authenticationToken, HttpStatus.OK);
         }
         else {

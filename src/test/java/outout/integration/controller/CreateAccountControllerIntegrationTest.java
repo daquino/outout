@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import outout.OutoutApplication;
 import outout.model.User;
+import outout.util.TestApplicationPaths;
 import outout.view.AccountCredentials;
 
 import javax.persistence.EntityManager;
@@ -30,8 +31,7 @@ import static org.junit.Assert.fail;
 @SpringApplicationConfiguration(classes = OutoutApplication.class)
 @WebIntegrationTest
 public class CreateAccountControllerIntegrationTest {
-    private final String createAccountPath = "http://localhost:9000/account/create";
-    private RestTemplate restTemplate;
+    private RestTemplate client;
     private AccountCredentials accountCredentials;
 
     @PersistenceContext
@@ -39,12 +39,12 @@ public class CreateAccountControllerIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        restTemplate = new RestTemplate();
+        client = new RestTemplate();
     }
 
     @After
     public void tearDown() throws Exception {
-        restTemplate = null;
+        client = null;
         accountCredentials = null;
     }
 
@@ -54,7 +54,7 @@ public class CreateAccountControllerIntegrationTest {
         accountCredentials.setUsername("testme");
         accountCredentials.setPassword("passwordpassword");
 
-        ResponseEntity<Void> response = restTemplate.postForEntity(createAccountPath, accountCredentials, Void.class);
+        ResponseEntity<Void> response = client.postForEntity(TestApplicationPaths.CREATE_ACCOUNT_PATH, accountCredentials, Void.class);
         User user = findUserByUsername(accountCredentials.getUsername());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(user.getUsername(), is(accountCredentials.getUsername()));
@@ -75,7 +75,7 @@ public class CreateAccountControllerIntegrationTest {
         accountCredentials.setPassword("passwordpassword");
 
         try {
-            restTemplate.postForEntity(createAccountPath, accountCredentials, Void.class);
+            client.postForEntity(TestApplicationPaths.CREATE_ACCOUNT_PATH, accountCredentials, Void.class);
         }
         catch (HttpClientErrorException exc) {
             assertThat(exc.getStatusCode(), is(HttpStatus.BAD_REQUEST));
@@ -94,7 +94,7 @@ public class CreateAccountControllerIntegrationTest {
         accountCredentials.setPassword("password");
 
         try {
-            restTemplate.postForEntity(createAccountPath, accountCredentials, Void.class);
+            client.postForEntity(TestApplicationPaths.CREATE_ACCOUNT_PATH, accountCredentials, Void.class);
         }
         catch (HttpClientErrorException exc) {
             assertThat(exc.getStatusCode(), is(HttpStatus.BAD_REQUEST));

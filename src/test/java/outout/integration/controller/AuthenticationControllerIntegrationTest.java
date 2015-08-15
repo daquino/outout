@@ -31,7 +31,7 @@ import static org.junit.Assert.fail;
 @SpringApplicationConfiguration(classes = OutoutApplication.class)
 @WebIntegrationTest
 public class AuthenticationControllerIntegrationTest {
-    private RestTemplate restTemplate;
+    private RestTemplate client;
     private AccountCredentials accountCredentials;
     private DatabaseCleanup databaseCleanup;
 
@@ -43,13 +43,13 @@ public class AuthenticationControllerIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        restTemplate = new RestTemplate();
+        client = new RestTemplate();
         databaseCleanup = new DatabaseCleanup(dataSource);
     }
 
     @After
     public void tearDown() throws Exception {
-        restTemplate = null;
+        client = null;
         accountCredentials = null;
         databaseCleanup.deleteUsers();
     }
@@ -60,10 +60,10 @@ public class AuthenticationControllerIntegrationTest {
         accountCredentials.setUsername("testme");
         accountCredentials.setPassword("passwordpassword");
 
-        restTemplate.postForEntity(TestApplicationPaths.CREATE_ACCOUNT_PATH,
+        client.postForEntity(TestApplicationPaths.CREATE_ACCOUNT_PATH,
                 accountCredentials, Void.class);
 
-        ResponseEntity<AuthenticationToken> response = restTemplate.postForEntity(TestApplicationPaths.AUTHENTICATION_PATH,
+        ResponseEntity<AuthenticationToken> response = client.postForEntity(TestApplicationPaths.AUTHENTICATION_PATH,
                 accountCredentials, AuthenticationToken.class);
         AuthenticationToken authenticationToken = response.getBody();
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -84,7 +84,7 @@ public class AuthenticationControllerIntegrationTest {
         accountCredentials.setPassword("passwordpassword");
 
         try {
-            ResponseEntity<AuthenticationToken> response = restTemplate.postForEntity(TestApplicationPaths.AUTHENTICATION_PATH,
+            ResponseEntity<AuthenticationToken> response = client.postForEntity(TestApplicationPaths.AUTHENTICATION_PATH,
                     accountCredentials, AuthenticationToken.class);
         }
         catch(HttpClientErrorException exc) {
@@ -104,11 +104,11 @@ public class AuthenticationControllerIntegrationTest {
         badCredentials.setUsername(accountCredentials.getUsername());
         badCredentials.setPassword("thisisthewrongpassword");
 
-        restTemplate.postForEntity(TestApplicationPaths.CREATE_ACCOUNT_PATH,
+        client.postForEntity(TestApplicationPaths.CREATE_ACCOUNT_PATH,
                 accountCredentials, Void.class);
 
         try {
-            restTemplate.postForEntity(TestApplicationPaths.AUTHENTICATION_PATH,
+            client.postForEntity(TestApplicationPaths.AUTHENTICATION_PATH,
                     badCredentials, AuthenticationToken.class);
             fail("Should return 404 with wrong password.");
         }

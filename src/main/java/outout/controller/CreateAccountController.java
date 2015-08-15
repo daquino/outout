@@ -32,15 +32,16 @@ public class CreateAccountController {
     @Transactional
     public ResponseEntity<Void> createAccount(@RequestBody AccountCredentials accountCredentials) {
         ResponseEntity<Void> response;
-        String username = accountCredentials.getUsername();
-        String password = accountCredentials.getPassword();
-        if(!StringUtils.isEmpty(username) && username.length() > 5
-                && !StringUtils.isEmpty(password) && password.length() > 10) {
+        String u = accountCredentials.getUsername();
+        String p = accountCredentials.getPassword();
+        if(!StringUtils.isEmpty(u) && u.length() > 5
+                && !StringUtils.isEmpty(p) && p.length() > 10) {
             User user = new User();
-            user.setUsername(username);
-            user.setPassword(encoder.encode(password));
+            user.setUsername(u);
+            user.setPassword(encoder.encode(p));
             entityManager.persist(user);
             response = new ResponseEntity<>(HttpStatus.OK);
+            System.out.println("Account created!");
         }
         else {
             response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
