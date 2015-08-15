@@ -36,7 +36,7 @@ to use the in-memory database H2.
 
 ***
 ### Authentication and Authorization
-The project is using [JSON Web Tokens](http://jwt.io/) for authentication and authorization.  Authentication is being handled manually by the AuthenticationController and Spring Security is handling authorization.  
+The project is using [JSON Web Tokens](http://jwt.io/) for authentication and authorization.  Authentication is being handled manually by the AuthenticationController and Spring Security is handling authorization using the JWTs.  
 
 While you can use Spring Security to abstract authentication from the application(hint), the current authentication model was purposely designed this way for this exercise.
 
