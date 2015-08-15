@@ -26,30 +26,28 @@ import java.util.List;
 public class AuthenticationController {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    private EntityManager em;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder pe;
 
     @Value("${token.secret}")
-    private String tokenSecret;
+    private String ts;
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<AuthenticationToken> authenticate(@RequestBody AccountCredentials accountCredentials) {
-        Query query = entityManager.createQuery("select u from User u where u.username = :username");
-        query.setParameter("username", accountCredentials.getUsername());
-        query.setMaxResults(1);
-        List<User> users = query.getResultList();
-        User user = users.isEmpty() ? null : users.get(0);
-        System.out.println("User = " + user.getUsername());
-        if(user != null && passwordEncoder.matches(accountCredentials.getPassword(), user.getPassword())) {
+    public ResponseEntity<AuthenticationToken> authenticate(@RequestBody AccountCredentials ac) {
+        Query q = em.createQuery("select u from User u where u.username = :username");
+        q.setParameter("username", ac.getUsername());
+        q.setMaxResults(1);
+        List<User> uList = q.getResultList();
+        User user = uList.isEmpty() ? null : uList.get(0);
+        if(user != null && pe.matches(ac.getPassword(), user.getPassword())) {
             AuthenticationToken authenticationToken = new AuthenticationToken();
-            String jwt = Jwts.builder().signWith(SignatureAlgorithm.HS512, tokenSecret)
-                    .setSubject(accountCredentials.getUsername())
+            String jwt = Jwts.builder().signWith(SignatureAlgorithm.HS512, ts)
+                    .setSubject(ac.getUsername())
                     .compact();
             authenticationToken.setToken(jwt);
-            System.out.println("Token = " + jwt);
             return new ResponseEntity<>(authenticationToken, HttpStatus.OK);
         }
         else {

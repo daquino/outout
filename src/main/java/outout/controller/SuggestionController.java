@@ -25,28 +25,28 @@ import java.util.List;
 public class SuggestionController {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    private EntityManager em;
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public ResponseEntity<Void> suggest(@RequestBody RestaurantSuggestion restaurantSuggestion, Principal principal) {
-        Query query = entityManager.createQuery("select s from Suggestion s where s.suggestion = :suggestion " +
+    public ResponseEntity<Void> suggest(@RequestBody RestaurantSuggestion r, Principal p) {
+        Query q = em.createQuery("select s from Suggestion s where s.suggestion = :suggestion " +
                 "and trunc(s.suggestedDate) = trunc(:suggestedDate)");
-        query.setParameter("suggestion", restaurantSuggestion.getRestaurant());
-        query.setParameter("suggestedDate", DateTime.now().toDate());
-        List<Suggestion> suggestions = query.getResultList();
-        query = entityManager.createQuery("select s from Suggestion s where trunc(s.suggestedDate) = trunc(:suggestedDate) " +
+        q.setParameter("suggestion", r.getRestaurant());
+        q.setParameter("suggestedDate", DateTime.now().toDate());
+        List<Suggestion> sList = q.getResultList();
+        q = em.createQuery("select s from Suggestion s where trunc(s.suggestedDate) = trunc(:suggestedDate) " +
                 "and s.suggestedBy = :username");
-        query.setParameter("suggestedDate", DateTime.now().toDate());
-        query.setParameter("username", principal.getName());
-        List<Suggestion> userSuggestionsForToday = query.getResultList();
-        if(suggestions.size() == 0 && userSuggestionsForToday.size() < 2) {
-            Suggestion suggestion = new Suggestion();
-            suggestion.setSuggestedBy(principal.getName());
-            suggestion.setSuggestion(restaurantSuggestion.getRestaurant());
-            suggestion.setSuggestedDate(DateTime.now().toDate());
-            entityManager.persist(suggestion);
+        q.setParameter("suggestedDate", DateTime.now().toDate());
+        q.setParameter("username", p.getName());
+        List<Suggestion> us = q.getResultList();
+        if(sList.size() == 0 && us.size() < 2) {
+            Suggestion s = new Suggestion();
+            s.setSuggestedBy(p.getName());
+            s.setSuggestion(r.getRestaurant());
+            s.setSuggestedDate(DateTime.now().toDate());
+            em.persist(s);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else {
@@ -58,17 +58,17 @@ public class SuggestionController {
     @ResponseBody
     @Transactional
     public ResponseEntity<RestaurantSuggestions> suggestionsForToday() {
-        RestaurantSuggestions restaurantSuggestions = new RestaurantSuggestions();
-        Query query = entityManager.createQuery("select s from Suggestion s where trunc(s.suggestedDate) = trunc(:suggestedDate)");
-        query.setParameter("suggestedDate", DateTime.now().toDate());
-        List<Suggestion> suggestions = query.getResultList();
-        restaurantSuggestions.setRestaurantSuggestions(new ArrayList<>(suggestions.size()));
-        for(Suggestion suggestion: suggestions) {
-            RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
-            restaurantSuggestion.setRestaurant(suggestion.getSuggestion());
-            restaurantSuggestions.getRestaurantSuggestions().add(restaurantSuggestion);
+        RestaurantSuggestions r = new RestaurantSuggestions();
+        Query q = em.createQuery("select s from Suggestion s where trunc(s.suggestedDate) = trunc(:suggestedDate)");
+        q.setParameter("suggestedDate", DateTime.now().toDate());
+        List<Suggestion> sList = q.getResultList();
+        r.setRestaurantSuggestions(new ArrayList<>(sList.size()));
+        for(Suggestion s: sList) {
+            RestaurantSuggestion rs = new RestaurantSuggestion();
+            rs.setRestaurant(s.getSuggestion());
+            r.getRestaurantSuggestions().add(rs);
         }
-        return new ResponseEntity<>(restaurantSuggestions, HttpStatus.OK);
+        return new ResponseEntity<>(r, HttpStatus.OK);
     }
 
 
