@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import outout.OutoutApplication;
 import outout.model.User;
 import outout.util.DataLoader;
+import outout.util.DatabaseCleanup;
 import outout.util.Nuke;
 import outout.util.TestApplicationPaths;
 import outout.view.AccountCreationResult;
@@ -42,6 +43,7 @@ public class CreateAccountControllerIntegrationTest {
     private ResponseEntity<AccountCreationResult> response;
     private ObjectMapper mapper;
     private DataLoader loader;
+    private DatabaseCleanup databaseCleanup;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -57,10 +59,12 @@ public class CreateAccountControllerIntegrationTest {
         client = new RestTemplate();
         mapper = new ObjectMapper();
         loader = new DataLoader(dataSource, passwordEncoder);
+        databaseCleanup = new DatabaseCleanup(dataSource);
     }
 
     @After
     public void tearDown() throws Exception {
+        databaseCleanup.deleteUsers();
         Nuke.nukeFields(this);
     }
 
@@ -80,7 +84,7 @@ public class CreateAccountControllerIntegrationTest {
 
     private User findUserByUsername(String username) {
         Query query = entityManager.createQuery("select u from User u where u.username = :username");
-        query.setParameter("username", accountCredentials.getUsername());
+        query.setParameter("username", username);
         query.setMaxResults(1);
         List<User> users = query.getResultList();
         return users.isEmpty() ? null : users.get(0);
