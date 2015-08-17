@@ -36,7 +36,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-security")
     compile 'io.jsonwebtoken:jjwt:0.5.1'
     compile 'joda-time:joda-time:2.3'
-    runtime("com.h2database:h2")
+    compile("com.h2database:h2")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("junit:junit:4.12")
     testCompile("org.hamcrest:hamcrest-all:1.3")

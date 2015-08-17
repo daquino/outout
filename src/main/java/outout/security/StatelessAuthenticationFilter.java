@@ -33,14 +33,11 @@ public class StatelessAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getHeader("X-AUTH-TOKEN");
         Authentication authentication;
-        System.out.println("Checking JWT...");
         try {
             Jws<Claims> jsonWebToken = Jwts.parser()
                     .setSigningKey(tokenSecret)
                     .parseClaimsJws(token);
             String username = jsonWebToken.getBody().getSubject();
-            String password = jsonWebToken.getSignature();
-            System.out.println(String.format("Username = %s, Password/Signature = %s", username, password));
             authentication = new UserAuthentication(username);
         }
         catch(Exception exc) {
