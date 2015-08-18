@@ -12,21 +12,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import outout.dao.UserDao;
 import outout.model.User;
 import outout.view.AccountCredentials;
 import outout.view.AuthenticationToken;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.List;
 
 @Controller
 @RequestMapping("/authenticate")
 public class AuthenticationController {
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private PasswordEncoder pe;
@@ -37,11 +33,8 @@ public class AuthenticationController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<AuthenticationToken> authenticate(@RequestBody AccountCredentials ac) {
-        Query q = em.createQuery("select u from User u where u.username = :username");
-        q.setParameter("username", ac.getUsername());
-        q.setMaxResults(1);
-        List<User> uList = q.getResultList();
-        User user = uList.isEmpty() ? null : uList.get(0);
+
+        User user = userDao.findUserByUsername(ac.getUsername());
         if(user != null && pe.matches(ac.getPassword(), user.getPassword())) {
             AuthenticationToken authenticationToken = new AuthenticationToken();
             String jwt = Jwts.builder().signWith(SignatureAlgorithm.HS512, ts)
