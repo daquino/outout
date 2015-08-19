@@ -43,6 +43,7 @@ The project is using [JSON Web Tokens](http://jwt.io/) for authentication and au
 While you can use Spring Security to abstract authentication from the application(hint), the current authentication model was purposely designed this way for this exercise.
 
 ***
+
 ### Testing
 Integration tests are provided with the project to make sure any changes adhere to the above business rules.  The tests starts the application in an embedded tomcat instance before running through the test cases.  The test cases use Spring's RestTemplate to make API calls to each endpoint.
 
