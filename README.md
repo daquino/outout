@@ -6,6 +6,7 @@ giving you the standard options?  The Southern not answering your calls for the 
 12:45 (you know who you are).
 
 ***
+
 ### Overview
 This is project is intended to be used as a paired programming refactoring exercise.
 
@@ -35,6 +36,7 @@ to use the in-memory database H2.
   3. Only an authenticated user may offer suggestions.
 
 ***
+
 ### Authentication and Authorization
 The project is using [JSON Web Tokens](http://jwt.io/) for authentication and authorization.  Authentication is being handled manually by the AuthenticationController and Spring Security is handling authorization using the JWTs.  
 
